@@ -11,10 +11,12 @@ license: MIT-style license
 
 authors:
   - Tom Occhino
+  - Tim Wienk
 
 requires:
   - Core/Fx.Morph
   - /Drag.Move
+  - Element.Delegation
 
 provides: [Sortables]
 
@@ -33,7 +35,9 @@ var Sortables = new Class({
 		clone: false,
 		revert: false,
 		handle: false,
-		dragOptions: {}/*<1.2compat>*/,
+		dragOptions: {},
+		autoAddItems: false,
+		relay: '>'/*<1.2compat>*/,
 		snap: 4,
 		constrain: false,
 		preventDefault: false
@@ -68,37 +72,63 @@ var Sortables = new Class({
 
 	addItems: function(){
 		Array.flatten(arguments).each(function(element){
+			element.set('data-sortable', true);
 			this.elements.push(element);
-			var start = element.retrieve('sortables:start', function(event){
-				this.start.call(this, event, element);
-			}.bind(this));
-			(this.options.handle ? element.getElement(this.options.handle) || element : element).addEvent('mousedown', start);
 		}, this);
 		return this;
 	},
 
 	addLists: function(){
+		var self = this,
+			manualItems = !this.options.autoAddItems,
+			handle = this.options.handle;
+
+		if (!this.relay){
+			var relay = this.options.relay.trim();
+			if (relay.charAt(0) == '>') relay = '[data-sortable-list] ' + relay;
+			if (manualItems) relay += '[data-sortable]';
+			this.relay = relay;
+		}
+
 		Array.flatten(arguments).each(function(list){
+			list.set('data-sortable-list', true);
 			this.lists.include(list);
-			this.addItems(list.getChildren());
+			if (manualItems) this.addItems(list.getElements('>'));
+
+			var start = list.retrieve('sortables:start');
+
+			if (!start){
+				start = (handle ? function(event){
+					if (Slick.match(event.target, handle)) self.start.call(self, event, this);
+				} : function(event){
+					self.start.call(self, event, this);
+				});
+
+				list.store('sortables:start', start);
+			}
+
+			list.addEvent('mousedown:relay(' + this.relay + ')', start);
 		}, this);
 		return this;
 	},
 
 	removeItems: function(){
 		return $$(Array.flatten(arguments).map(function(element){
+			element.set('data-sortable', null);
 			this.elements.erase(element);
-			var start = element.retrieve('sortables:start');
-			(this.options.handle ? element.getElement(this.options.handle) || element : element).removeEvent('mousedown', start);
-
 			return element;
 		}, this));
 	},
 
 	removeLists: function(){
 		return $$(Array.flatten(arguments).map(function(list){
+			list.set('data-sortable-list', null);
+
+			var start = list.retrieve('sortables:start');
+			list.removeEvent('mousedown', start);
+
 			this.lists.erase(list);
-			this.removeItems(list.getChildren());
+			if (!this.options.autoAddItems) this.removeItems(list.getChildren());
 
 			return list;
 		}, this));

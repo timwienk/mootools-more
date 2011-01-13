@@ -1,0 +1,58 @@
+<style>
+	#wrapper {
+		height: 150px;
+		overflow: auto;
+		width: 300px;
+	}
+	#SortableExample li {
+		margin: 2px !important;
+		padding: 2px !important;
+		background: #ccc !important;
+		cursor: pointer;
+		position: relative;
+	}
+	.handle {
+		display: block;
+		width: 13px;
+		height: 13px;
+		background-color: #ff0000;
+		position: absolute;
+		top: 2px;
+		right: 2px;
+	}
+</style>
+
+<p>These should only be draggable by the red handles.</p>
+
+<div id="wrapper">
+	<ul id="SortableExample">
+		<li id="1">First <span class="handle"></span></li>
+		<li id="2">Second <span class="handle"></span></li>
+		<li id="3">Third <span class="handle"></span></li>
+		<li id="4">Fourth <span class="handle"></span></li>
+		<li id="5">Fifth <span class="handle"></span></li>
+		<li id="6">Sixth <span class="handle"></span></li>
+		<li id="7">Seventh <span class="handle"></span></li>
+		<li id="8">Eigth <span class="handle"></span></li>
+		<li id="9">Nineth <span class="handle"></span></li>
+		<li id="10">Tenth <span class="handle"></span></li>
+	</ul>
+</div>
+<div id="order"></div>
+
+<script src="/depender/build?require=More/Sortables"></script>
+<script>
+
+var mySort = new Sortables($('SortableExample'), {
+	handle: '.handle',
+	clone: true,
+	opacity: 0.6,
+	dragOptions: {
+		modifiers: { x : false }
+	},
+	onComplete: function(){
+		$('order').set('html', 'order: ' + mySort.serialize())
+	}
+});
+
+</script>
