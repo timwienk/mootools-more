@@ -37,7 +37,8 @@ var Sortables = new Class({
 		handle: false,
 		dragOptions: {},
 		autoAddItems: false,
-		relay: '>'/*<1.2compat>*/,
+		relay: '>',
+		dataAttribute: 'sortable'/*<1.2compat>*/,
 		snap: 4,
 		constrain: false,
 		preventDefault: false
@@ -47,7 +48,6 @@ var Sortables = new Class({
 	initialize: function(lists, options){
 		this.setOptions(options);
 
-		this.elements = [];
 		this.lists = [];
 		this.idle = true;
 
@@ -71,27 +71,30 @@ var Sortables = new Class({
 	},
 
 	addItems: function(){
+		var dataAttribute = 'data-' + this.options.dataAttribute;
 		Array.flatten(arguments).each(function(element){
-			element.set('data-sortable', true);
-			this.elements.push(element);
+			element.set(dataAttribute, true);
 		}, this);
 		return this;
 	},
 
 	addLists: function(){
 		var self = this,
+			dataAttribute = 'data-' + this.options.dataAttribute + '-list';
+			listSelector = '[' + dataAttribute + ']',
+			itemSelector = '[data-' + this.options.dataAttribute + ']',
 			manualItems = !this.options.autoAddItems,
 			handle = this.options.handle;
 
 		if (!this.relay){
 			var relay = this.options.relay.trim();
-			if (relay.charAt(0) == '>') relay = '[data-sortable-list] ' + relay;
-			if (manualItems) relay += '[data-sortable]';
+			if (relay.charAt(0) == '>') relay = listSelector + relay;
+			if (manualItems) relay += itemSelector;
 			this.relay = relay;
 		}
 
 		Array.flatten(arguments).each(function(list){
-			list.set('data-sortable-list', true);
+			list.set(dataAttribute, true);
 			this.lists.include(list);
 			if (manualItems) this.addItems(list.getElements('>'));
 
@@ -113,16 +116,17 @@ var Sortables = new Class({
 	},
 
 	removeItems: function(){
+		var dataAttribute = 'data-' + this.options.dataAttribute;
 		return $$(Array.flatten(arguments).map(function(element){
-			element.set('data-sortable', null);
-			this.elements.erase(element);
+			element.set(dataAttribute, null);
 			return element;
 		}, this));
 	},
 
 	removeLists: function(){
+		var dataAttribute = 'data-' + this.options.dataAttribute + '-list';
 		return $$(Array.flatten(arguments).map(function(list){
-			list.set('data-sortable-list', null);
+			list.set(dataAttribute, null);
 
 			var start = list.retrieve('sortables:start');
 			list.removeEvent('mousedown', start);
