@@ -24,7 +24,7 @@ var keysStoreKey = '$moo:keys-pressed',
 	keysParsed = {};
 
 var parseKeys = function(text){
-		return text.replace(/ctrl/g, 'control').split('|').map(function(key){
+		return text.replace(/ctrl/g, 'control').split(',').map(function(key){
 			var arr = [];
 			arr.append(key.replace('++', function(){
 				arr.push('+'); // shift++ and shift+++a
