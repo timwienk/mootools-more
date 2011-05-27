@@ -24,13 +24,18 @@ var keysStoreKey = '$moo:keys-pressed',
 	keysParsed = {};
 
 var parseKeys = function(text){
-		return text.replace(/ctrl/g, 'control').split(',').map(function(key){
-			var arr = [];
-			arr.append(key.replace('++', function(){
-				arr.push('+'); // shift++ and shift+++a
+		text = text.replace(/ctrl/g, 'control').replace(/(\S?)\s*,\s*,\s*/g, function(selector, lastChar){
+			if (!lastChar || lastChar == '+') return lastChar + 'comma,';
+			return (lastChar + ',comma');
+		});
+
+		return text.split(/\s*(?!^|\+)\s*,\s*(?!$|\+)\s*/).map(function(key){
+			var keys = [];
+			keys.append(key.replace(/comma/g, ',').replace(/\s*\+\s*\+\s*/g, function(){
+				keys.push('+'); // shift++ and shift+++a
 				return '';
-			}).split('+'));
-			return arr;
+			}).split(/\s*\+\s*/));
+			return keys;
 		});
 	},
 	store = function(key, val){

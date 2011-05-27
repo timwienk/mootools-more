@@ -52,13 +52,14 @@ if (window.addEventListener) describe('Element.Event.Pseudos.Keys', function(){
 
 	});
 
-	it('keys: should fire events for pipe-separated combinations', function(){
+	it('keys: should fire events for comma-separated combinations', function(){
+		// Should add spec for something funky like :keys(,, ,+alt, shift+,, ctrl+,+alt, meta+comma)
 
 		var callback = jasmine.createSpy(),
 			callback2 = jasmine.createSpy(),
 			callback3 = jasmine.createSpy();
 
-		document.body.addEvent('keydown:keys(j|e|shift+i)', function(e) {
+		document.body.addEvent('keydown:keys(j,e,shift+i)', function(e) {
 			if (e.key == 'j') callback();
 			if (e.key == 'e') callback2();
 			if (e.key == 'i' && e.shift) callback3();
