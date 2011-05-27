@@ -21,9 +21,10 @@ provides: [Element.Event.Pseudos.Keys]
 
 var keysStoreKey = '$moo:keys-pressed',
 	keysKeyupStoreKey = '$moo:keys-keyup',
-	keysParsed = {},
-	parseKeys = function(text) {
-		return text.replace(/ctrl/g, 'control').split('|').map(function(key) {
+	keysParsed = {};
+
+var parseKeys = function(text){
+		return text.replace(/ctrl/g, 'control').split('|').map(function(key){
 			var arr = [];
 			arr.append(key.replace('++', function(){
 				arr.push('+'); // shift++ and shift+++a
@@ -44,17 +45,17 @@ var keysStoreKey = '$moo:keys-pressed',
 			unparsedValue = split.value,
 			keyCombos = keysParsed[unparsedValue] || (keysParsed[unparsedValue] = parseKeys(unparsedValue)),
 			pressed = retrieve.call(this, keysStoreKey, []);
-	
+
 		pressed.include(event.key);
-	
+
 		if (keyCombos.some(function(combo){
 			return combo.every(function(key){
 				return pressed.contains(key);
 			});
 		})) fn.apply(this, args);
-	
+
 		store.call(this, keysStoreKey, pressed);
-	
+
 		if (!retrieve.call(this, keysKeyupStoreKey)){
 			var keyup = function(event){
 				(function(){
@@ -64,7 +65,7 @@ var keysStoreKey = '$moo:keys-pressed',
 			};
 			store.call(this, keysKeyupStoreKey, keyup).addEvent('keyup', keyup);
 		}
-	
+
 	};
 
 Event.definePseudo('keys', keysPseudo);

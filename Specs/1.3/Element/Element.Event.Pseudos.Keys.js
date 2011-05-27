@@ -14,7 +14,7 @@ if (window.addEventListener) describe('Element.Event.Pseudos.Keys', function(){
 		document.body.addEvent('keydown:keys(shift++)', callback2);
 		document.body.addEvent('keydown:keys(ctrl+c)', callback3);
 		document.body.addEvent('keydown:keys(control+c)', callback4);
-		
+
 		document.body.addEvent('keydown:keys(shift+c)', callback5);
 
 		// shift+a
@@ -44,14 +44,14 @@ if (window.addEventListener) describe('Element.Event.Pseudos.Keys', function(){
 				document.body.eliminate('$moo:keys-pressed');
 			});
 		});
-		
+
 		waits(2);
 		runs(function() {
 			expect(callback5).not.toHaveBeenCalled();
 		})
 
 	});
-	
+
 	it('keys: should fire events for pipe-separated combinations', function(){
 
 		var callback = jasmine.createSpy(),
@@ -75,7 +75,7 @@ if (window.addEventListener) describe('Element.Event.Pseudos.Keys', function(){
 			expect(callback2).toHaveBeenCalled();
 			document.body.eliminate('$moo:keys-pressed');
 		});
-		
+
 		// shift+i
 		simulateEvent('type', ['[shift]i[shift-up]', document.body], function(){
 			expect(callback3).toHaveBeenCalled();
