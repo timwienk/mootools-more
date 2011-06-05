@@ -9,7 +9,7 @@
 	<h3>Keydown - press shift+++c and the event should fire on keydown</h3>
 	<p><small>Make sure you use the right <code>+</code> key, keydown/keyup events don't always return the right key in certain keyboard layouts</small></p>
 </div>
-<div id="result5"><h3>Keydown - press shift+e or shift+f and the event should fire on keydown</h3></div>
+<div id="result5"><h3>Keydown - press shift+e, shift+f, shift+comma or alt+comma and the event should fire on keydown</h3></div>
 <div id="result6"><h3>Keydown - press cmd+g and the event should fire on keydown</h3></div>
 
 <script src="/depender/build?require=More/Element.Event.Pseudos.Keys"></script>
@@ -40,8 +40,8 @@ document.addEvent('keydown:keys(shift+++c)', function(e){
 	result4.set('html', result4.get('html') + 'success keydown:keys(shift+++c)!<br>');
 });
 
-document.addEvent('keydown:keys(shift+e|shift+f)', function(e){
-	result5.set('html', result5.get('html') + 'success keydown:keys(shift+e|shift+f)!<br>');
+document.addEvent('keydown:keys(shift+e, shift+f, shift+,, ,+alt)', function(e){
+	result5.set('html', result5.get('html') + 'success keydown:keys(shift+e, shift+f, shift+,, ,+alt)!<br>');
 });
 
 if(Browser.Platform.name == 'mac') {
