@@ -24,17 +24,19 @@ var keysStoreKey = '$moo:keys-pressed',
 	keysParsed = {};
 
 var parseKeys = function(text){
-		text = text.replace(/ctrl/g, 'control').replace(/(\S?)\s*,\s*,\s*/g, function(selector, lastChar){
+		text = text.replace(/\s+/g, '').replace(/ctrl/g, 'control');
+
+		text = text.replace(/(.?),,/g, function(selector, lastChar){
 			if (!lastChar || lastChar == '+') return lastChar + 'comma,';
 			return (lastChar + ',comma');
 		});
 
-		return text.split(/\s*(?!^|\+)\s*,\s*(?!$|\+)\s*/).map(function(key){
+		return text.split(/(?!^|\+),(?!$|\+)/).map(function(key){
 			var keys = [];
-			keys.append(key.replace(/comma/g, ',').replace(/\s*\+\s*\+\s*/g, function(){
+			keys.append(key.replace('comma', ',').replace('++', function(){
 				keys.push('+'); // shift++ and shift+++a
 				return '';
-			}).split(/\s*\+\s*/));
+			}).split('+'));
 			return keys;
 		});
 	},
