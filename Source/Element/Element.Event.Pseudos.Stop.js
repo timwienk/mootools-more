@@ -18,13 +18,10 @@ provides: [Element.Event.Pseudos.Stop]
 ...
 */
 
-(function(){
-
 ['stop', 'preventDefault', 'stopPropagation'].each(function(method){
 	Event.definePseudo(method, function(split, fn, args){
-		args[0][method]();
+		var event = args[0];
+		if (event && event[method]) event[method]();
 		fn.apply(this, args);
 	});
 });
-
-})();
